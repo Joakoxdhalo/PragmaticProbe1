@@ -60,9 +60,12 @@ def min_and_max_header(cubes_list, cubes):
 
 def main():
     list_of_cubes = []
-    print("Enter the three lines of the input:")
-    for i in range(3):
-        list_of_cubes.append(int(input))
+    # print("Enter the three lines of the input:")
+
+    # for i in range(3):
+    #     list_of_cubes.append(int(input()))
+
+    list_of_cubes = [78, 59, 52, 29, 28, 0]
     final_result = ""
     case = 0
 
@@ -90,18 +93,44 @@ def main():
 
 
 def recursive(cubes, lower_i, upper_i, cubes_list, solution):
-    for index in range(upper_i, lower_i - 1, -1):
-        cubes_rest = cubes - cubes_list[index][0]
-        solution.append(cubes_list[index])
+    print(f"cubes: {cubes}")
+    print(f"cubes list: {cubes_list}")
+    print(f'upper_i{upper_i} lower_i{lower_i}')
+    print(f'upper: {cubes_list[upper_i]} lower: {cubes_list[lower_i]}')
+    if upper_i < lower_i:
+        return "Impossible"
+    if cubes_list[upper_i] not in solution:
+        print(f"appending {cubes_list[upper_i]}")
+        solution.append(cubes_list[upper_i])
+        cubes_rest = cubes - cubes_list[upper_i][0]
+        print(f'cubes_rest: {cubes_rest}')
+        print(f'current_index: {cubes_list[upper_i][0]}')
+
         if cubes_rest == 0:
+            print(f"The complete solution is... {solution}")
             return solution
-        elif cubes_rest < 10 and cubes_rest != 5:
+
+        elif (cubes_rest < 10 and cubes_rest != 5):
+            print(f"deleting: {cubes_list[upper_i]}")
             solution.pop()
-            continue
+            print("Here is not the way")
         else:
-            lower_i, upper_i = min_and_max_header(cubes_list, cubes_rest)
-            return recursive(cubes_rest, lower_i, upper_i, cubes_list, solution)
-    return "Impossible"
+            lower_i_second_lvl, upper_i_second_lvl = min_and_max_header(cubes_list, cubes_rest)
+            print("Calling inner function...")
+            partial_solution = recursive(cubes_rest, lower_i_second_lvl, upper_i_second_lvl, cubes_list, solution)
+
+            if partial_solution != "Impossible":
+                print("Returning solution from inner... ")
+                return partial_solution
+            else:
+                print(f"Deleting value: {cubes_list[upper_i]}")
+                solution.pop()
+
+    else:
+        pass
+        print(f"repeated value catched: {cubes_list[upper_i]}")
+    print("Calling outter function...")
+    return recursive(cubes, lower_i, upper_i - 1, cubes_list, solution)
 
 
 if __name__ == '__main__':
